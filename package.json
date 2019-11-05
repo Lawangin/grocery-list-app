@@ -1,5 +1,6 @@
 {
-  "name": "react-hooks-update",
+  "name": "grocery-list-app",
+  "author": "Lawangin Khan",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
