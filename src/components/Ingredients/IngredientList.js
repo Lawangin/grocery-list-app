@@ -5,7 +5,7 @@ import './IngredientList.css';
 const IngredientList = React.memo(props => {
   return (
     <section className="ingredient-list">
-      <h2>Loaded Ingredients</h2>
+      <h2>Loaded Ingredients List<br /> (click on ingredient to delete) </h2>
       <ul>
         {props.ingredients.map(ig => (
           <li key={ig.id} onClick={props.onRemoveItem.bind(this, ig.id)}>
