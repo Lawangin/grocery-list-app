@@ -1,0 +1,22 @@
+.auth {
+  width: 30rem;
+  margin: 2rem auto;
+  max-width: 80%;
+  text-align: center;
+}
+
+input {
+  display: block;
+  padding: 6px;
+  box-sizing: border-box;
+  margin: 12px auto;
+  width: 60%;
+}
+
+input:focus {
+  outline-color: hotpink;
+}
+
+button {
+  margin: 12px;
+}
