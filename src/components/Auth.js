@@ -34,6 +34,7 @@ const Auth = props => {
             <Card>
                 <h2>You are not authenticated!</h2>
                 <p>Please log in to continue.</p>
+                <p>May use the following credentials for testing. <br/>User: <strong>test@test.com</strong> Pass: <strong>123456</strong></p>
                 <form onSubmit={event => {
                     event.preventDefault();
                     signupHandler(userEmail.value, userPassword.value);
