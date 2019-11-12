@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import 'react-app-env';
 
 export const AuthContext = React.createContext({
     isAuth: false,
