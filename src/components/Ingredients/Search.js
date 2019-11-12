@@ -20,18 +20,26 @@ const Search = React.memo(props => {
                         for (const key in resData) {
                             loadedIngredients.push({
                                 id: key,
-                                title: resData[key].title,
-                                amount: resData[key].amount
+                                title: resData[key].ingredient.title,
+                                amount: resData[key].ingredient.amount,
+                                userId: resData[key].userId
                             });
                         }
-                        onLoadIngredients(loadedIngredients);
+                        let updatedLoadedIngredients = [];
+                        loadedIngredients.map(ing => {
+                            if (ing.userId === props.currentUser) {
+                                updatedLoadedIngredients.push(ing);
+                            }
+                            return updatedLoadedIngredients;
+                        });
+                        onLoadIngredients(updatedLoadedIngredients);
                     });
             }
         }, 500);
         return () => {
             clearTimeout(timer);
         }
-    }, [enteredFilter, onLoadIngredients, inputRef]);
+    }, [enteredFilter, onLoadIngredients, inputRef, props.currentUser]);
 
     return (
         <section className="search">

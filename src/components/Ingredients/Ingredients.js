@@ -1,10 +1,11 @@
-import React, { useReducer, useEffect, useCallback } from 'react';
+import React, { useReducer, useEffect, useCallback, useContext } from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from "./IngredientList";
 import Search from './Search';
 import ErrorModal from "../UI/ErrorModal";
 import useHttp from "../../hooks/http";
+import {AuthContext} from '../../context/auth-context';
 
 // can use state or oldState instead of currentIngredient for reducers
 const ingredientReducer = (currentIngredient, action) => {
@@ -24,6 +25,7 @@ const ingredientReducer = (currentIngredient, action) => {
 function Ingredients() {
     const [ initialIngredients, dispatch ] = useReducer(ingredientReducer, []);
     const { isLoading, error, data, sendRequest, reqExtra, reqIdentifier, clear } = useHttp();
+    const authContext = useContext(AuthContext);
     // created custom hook for httpstate
     // const [ httpState, dispatchHttp] = useReducer(httpReducer, { loading: false, error: null});
 
@@ -40,27 +42,44 @@ function Ingredients() {
     }, [data, reqExtra, reqIdentifier, isLoading, error]);
 
     useEffect(() => {
-        fetch('https://ingredients-list-app.firebaseio.com/ingredients.json')
-            .then(response => response.json())
+        const queryParams = '?auth='+ authContext.token + '&ingredientsBy="userId"&equalsTo="' + authContext.id + '"';
+        fetch('https://ingredients-list-app.firebaseio.com/ingredients.json' + queryParams)
+            .then(response => {
+                return response.json();
+            })
             .then(resData => {
                 const loadedIngredients = [];
                 for (const key in resData) {
                     loadedIngredients.push({
-                        id: key,
-                        title: resData[key].title,
-                        amount: resData[key].amount
+                        id: [key],
+                        title: resData[key].ingredient.title,
+                        amount: resData[key].ingredient.amount,
+                        userId: resData[key].userId
                     });
                 }
                 // setIngredients(loadedIngredients);
-                dispatch({type: 'SET', ingredients: loadedIngredients});
+                let updatedIngredients = [];
+                loadedIngredients.map(ing => {
+                    if (ing.userId === authContext.id) {
+                        updatedIngredients.push(ing);
+                    }
+                    return updatedIngredients;
+                });
+                dispatch({type: 'SET', ingredients: updatedIngredients});
             });
-    }, []);
+    }, [authContext.id, authContext.token]);
+
+
 
     const addIngredientHandler = useCallback(ingredient => {
+        const data = {
+            ingredient: ingredient,
+            userId: authContext.id
+        };
         sendRequest(
             'https://ingredients-list-app.firebaseio.com/ingredients.json',
             'POST',
-            JSON.stringify(ingredient),
+            JSON.stringify(data),
             ingredient,
             'ADD_INGREDIENT'
         );
@@ -86,7 +105,7 @@ function Ingredients() {
         //         dispatch({type: 'ADD', ingredient: { id: resData.name, ...ingredient }});
         // });
 
-    }, [sendRequest]);
+    }, [sendRequest, authContext.id]);
 
     const removeIngredientHandler = useCallback(selectedIngredientId => {
         sendRequest(
@@ -136,7 +155,7 @@ function Ingredients() {
       <IngredientForm onAddIngredient={addIngredientHandler} loading={isLoading} />
 
       <section>
-        <Search onLoadIngredients={filteredIngredientsHandler} />
+        <Search onLoadIngredients={filteredIngredientsHandler} currentUser={authContext.id}/>
         <IngredientList ingredients={initialIngredients} onRemoveItem={removeIngredientHandler} />
       </section>
     </div>
