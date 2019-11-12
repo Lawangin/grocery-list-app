@@ -5,8 +5,8 @@
   "private": true,
   "dependencies": {
     "axios": "^0.19.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
     "react-scripts": "3.0.1"
   },
   "scripts": {
@@ -29,5 +29,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-app-env": "^1.2.3"
   }
 }
